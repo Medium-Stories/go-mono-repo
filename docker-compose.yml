@@ -1,0 +1,63 @@
+version: "3.8"
+
+services:
+  user_account:
+    image: semirm/go-mono-repo-user:1
+    build:
+      context: .
+      dockerfile: cmd/user/Dockerfile
+    container_name: go-mono-repo_user
+    command:
+      - -rmq_host=go-mono-repo_rmq
+      - -connStr=host=go-mono-repo_pg port=5432 dbname=go-mono-repo_db user=postgres password=postgres sslmode=disable
+    ports:
+      - "8001:8001"
+    networks:
+      - go-mono-repo
+  account_listener:
+    image: semirm/go-mono-repo-listener:1
+    build:
+      context: .
+      dockerfile: cmd/listener/Dockerfile
+    container_name: go-mono-repo_account_listener
+    command:
+      - -rmq_host=go-mono-repo_rmq
+    depends_on:
+      - rmq
+    networks:
+      - go-mono-repo
+  gateway:
+    image: semirm/go-mono-repo-gateway:1
+    build:
+      context: .
+      dockerfile: cmd/gateway/Dockerfile
+    container_name: go-mono-repo_gateway
+    command:
+      - -account_uri=go-mono-repo_user:8001
+    ports:
+      - "8000:8000"
+    depends_on:
+      - user_account
+    networks:
+      - go-mono-repo
+  rmq:
+    image: rabbitmq:management
+    container_name: go-mono-repo_rmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - go-mono-repo
+  db:
+    image: postgres:latest
+    container_name: go-mono-repo_pg
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=go-mono-repo_db
+    ports:
+      - "5432:5432"
+    networks:
+      - go-mono-repo
+networks:
+  go-mono-repo:
