@@ -6,9 +6,9 @@ import (
 	"github.com/gobackpack/crypto"
 	"github.com/gobackpack/rmq"
 	"github.com/medium-stories/go-mono-repo/cmd/user/publisher"
+	"github.com/medium-stories/go-mono-repo/cmd/user/repository"
 	"github.com/medium-stories/go-mono-repo/internal/db"
 	"github.com/medium-stories/go-mono-repo/user"
-	"github.com/medium-stories/go-mono-repo/user/repository"
 	"github.com/sirupsen/logrus"
 )
 

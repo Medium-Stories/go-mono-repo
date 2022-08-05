@@ -2,11 +2,9 @@ package user
 
 import (
 	"context"
-	"errors"
 	"github.com/medium-stories/go-mono-repo/event"
 	"github.com/medium-stories/go-mono-repo/internal/grpc"
 	pbUser "github.com/medium-stories/go-mono-repo/user/proto"
-	"github.com/sirupsen/logrus"
 	grpcLib "google.golang.org/grpc"
 )
 
@@ -21,12 +19,11 @@ type accountService struct {
 	pwdHash PasswordHash
 }
 
-// Filter to apply when querying data store for user accounts
-type Filter struct {
-	Page    int
-	Limit   int
-	Country string
-}
+// You can implement these interfaces anywhere you want, in any package.
+// You could create /repository, /publisher as subpackages in /cmd/user/
+// and keep user service completely clean of any implementations. Or,
+// you could create such subpackages in user service and it all together.
+// Both approaches have their own pros and cons, it's your choice to pick the one you like.
 
 // AccountRepository communicates to data store with user accounts
 type AccountRepository interface {
@@ -41,6 +38,7 @@ type AccountPublisher interface {
 	Publish(event string, msg interface{}) error
 }
 
+// PasswordHash is used to hash and validate user password
 type PasswordHash interface {
 	Hash(plain string) (string, error)
 	Validate(hashed, plain string) bool
@@ -63,84 +61,20 @@ func (svc *accountService) RegisterGrpcServer(server *grpcLib.Server) {
 	pbUser.RegisterAccountManagementServer(server, svc)
 }
 
-// AddAccount will add new user account
 func (svc *accountService) AddAccount(ctx context.Context, req *pbUser.AccountRequest) (*pbUser.AccountMessage, error) {
-	existing, err := svc.repo.GetByEmail(ctx, req.Email)
-	if err != nil {
-		return nil, err
-	}
+	svc.pwdHash.Hash(req.Password)
 
-	if existing != nil && existing.Email == req.Email {
-		return nil, errors.New("email already exists")
-	}
+	svc.repo.AddAccount(ctx, &Account{})
 
-	hashed, err := svc.pwdHash.Hash(req.Password)
-	if err != nil {
-		return nil, err
-	}
+	svc.pub.Publish(event.AccountCreated, 1)
 
-	req.Password = hashed
-
-	account, err := svc.repo.AddAccount(ctx, protoReqToUserAccount(req))
-	if err != nil {
-		return nil, err
-	}
-
-	go func(id string) {
-		if pubErr := svc.pub.Publish(event.AccountCreated, id); pubErr != nil {
-			logrus.Error(pubErr)
-		}
-	}(account.Id)
-
-	return userAccountToProto(account), nil
+	return &pbUser.AccountMessage{}, nil
 }
 
 func (svc *accountService) DeleteAccount(ctx context.Context, req *pbUser.DeleteAccountRequest) (*pbUser.DeleteAccountResponse, error) {
-	account, err := svc.repo.GetById(ctx, req.Id)
-	if err != nil {
-		return nil, err
-	}
-	if account == nil || account.Email == "" {
-		return nil, errors.New("account not found")
-	}
+	svc.repo.DeleteAccount(ctx, req.Id)
 
-	if err = svc.repo.DeleteAccount(ctx, req.Id); err != nil {
-		return nil, err
-	}
+	svc.pub.Publish(event.AccountDeleted, 1)
 
-	go func(id string) {
-		if pubErr := svc.pub.Publish(event.AccountDeleted, id); pubErr != nil {
-			logrus.Error(pubErr)
-		}
-	}(req.Id)
-
-	return &pbUser.DeleteAccountResponse{
-		Success: true,
-	}, nil
-}
-
-func userAccountToProto(account *Account) *pbUser.AccountMessage {
-	return &pbUser.AccountMessage{
-		Id:        account.Id,
-		FirstName: account.FirstName,
-		LastName:  account.LastName,
-		Nickname:  account.Nickname,
-		Password:  account.Password,
-		Email:     account.Email,
-		Country:   account.Country,
-		CreatedAt: account.CreatedAt.String(),
-		UpdatedAt: account.UpdatedAt.String(),
-		DeletedAt: account.DeletedAt.String(),
-	}
-}
-
-func protoReqToUserAccount(pbAccount *pbUser.AccountRequest) *Account {
-	return &Account{
-		FirstName: pbAccount.FirstName,
-		LastName:  pbAccount.LastName,
-		Nickname:  pbAccount.Nickname,
-		Password:  pbAccount.Password,
-		Email:     pbAccount.Email,
-		Country:   pbAccount.Country,
-	}
+	return &pbUser.DeleteAccountResponse{}, nil
 }

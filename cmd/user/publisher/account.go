@@ -9,7 +9,6 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// accountPublisher is responsible to publish account events
 type accountPublisher struct {
 	hub  *rmq.Hub
 	conf map[string]*rmq.Publisher
