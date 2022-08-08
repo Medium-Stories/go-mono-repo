@@ -9,7 +9,7 @@ type inmemory struct {
 	Accounts []*user.Account
 }
 
-func NewAccountInmemory() *inmemory {
+func NewInMemory() *inmemory {
 	return &inmemory{}
 }
 

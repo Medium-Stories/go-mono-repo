@@ -5,17 +5,16 @@ import (
 	"github.com/medium-stories/go-mono-repo/product"
 )
 
-type productInMemory struct{}
-
-// inMemoryRepository is in memory data store implementation for products
-type inMemoryRepository struct {
+type inmemory struct {
 	products []*productInMemory
 }
 
-func NewInMemoryRepository() product.Repository {
-	return &inMemoryRepository{}
+type productInMemory struct{}
+
+func NewInMemory() product.Repository {
+	return &inmemory{}
 }
 
-func (repo *inMemoryRepository) GetProductsByFilter(ctx context.Context, filter *product.Filter) ([]*product.Product, error) {
+func (repo *inmemory) GetProductsByFilter(ctx context.Context, filter *product.Filter) ([]*product.Product, error) {
 	return []*product.Product{}, nil
 }

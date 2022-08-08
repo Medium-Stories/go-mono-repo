@@ -16,7 +16,7 @@ var (
 func main() {
 	flag.Parse()
 
-	svc := product.NewService(*addr, repository.NewInMemoryRepository(), &discount.Provider{Addr: *discountsUri})
+	svc := product.NewService(*addr, repository.NewInMemory(), &discount.Provider{Addr: *discountsUri})
 
 	rootCtx, rootCancel := context.WithCancel(context.Background())
 	defer rootCancel()
