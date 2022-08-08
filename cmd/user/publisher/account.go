@@ -20,7 +20,7 @@ func NewAccountPublisher(ctx context.Context, hub *rmq.Hub) *accountPublisher {
 		conf: make(map[string]*rmq.Publisher),
 	}
 
-	pub.setupEvents(ctx, []string{event.AccountCreated, event.AccountModified, event.AccountDeleted})
+	pub.setupEvents(ctx, []string{event.AccountCreated})
 
 	return pub
 }

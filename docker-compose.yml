@@ -58,11 +58,12 @@ services:
     container_name: go-mono-repo_gateway
     command:
       - -account_uri=go-mono-repo_user:8001
-      - -products_uri=myt_products:8002
+      - -products_uri=go-mono-repo_products:8002
     ports:
       - "8000:8000"
     depends_on:
       - user_account
+      - products
     networks:
       - go-mono-repo
   rmq:

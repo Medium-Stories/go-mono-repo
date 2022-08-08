@@ -18,11 +18,7 @@ type accountService struct {
 	pwdHash PasswordHash
 }
 
-type Account struct {
-	Id    string
-	Name  string
-	Email string
-}
+type Account struct{}
 
 type AccountRepository interface {
 	AddAccount(ctx context.Context, account *Account) (*Account, error)

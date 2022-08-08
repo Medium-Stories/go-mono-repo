@@ -16,11 +16,7 @@ type service struct {
 	repo Repository
 }
 
-type Discount struct {
-	Sku        string
-	Category   string
-	Percentage int
-}
+type Discount struct{}
 
 type Filter struct{}
 
