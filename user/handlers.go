@@ -1,4 +1,4 @@
-package gateway
+package user
 
 import (
 	"github.com/gin-gonic/gin"
@@ -16,7 +16,7 @@ type CreateAccount struct {
 	Country   string `json:"country"`
 }
 
-func (api *api) CreateAccount() gin.HandlerFunc {
+func (client *client) CreateAccountHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req *CreateAccount
 		if err := c.ShouldBindJSON(&req); err != nil {
@@ -25,14 +25,7 @@ func (api *api) CreateAccount() gin.HandlerFunc {
 			return
 		}
 
-		account, err := api.rpcClient.AddAccount(c.Request.Context(), &pbUser.AccountRequest{
-			FirstName: req.Firstname,
-			LastName:  req.Lastname,
-			Nickname:  req.Nickname,
-			Password:  req.Password,
-			Email:     req.Email,
-			Country:   req.Country,
-		})
+		account, err := client.rpcClient.AddAccount(c.Request.Context(), &pbUser.AccountRequest{})
 		if err != nil {
 			logrus.Error(err)
 			c.JSON(http.StatusBadRequest, err.Error())
@@ -40,22 +33,5 @@ func (api *api) CreateAccount() gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusOK, account)
-	}
-}
-
-func (api *api) DeleteAccount() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		idParam := c.Param("id")
-
-		resp, err := api.rpcClient.DeleteAccount(c.Request.Context(), &pbUser.DeleteAccountRequest{
-			Id: idParam,
-		})
-		if err != nil {
-			logrus.Error(err)
-			c.AbortWithStatus(http.StatusBadRequest)
-			return
-		}
-
-		c.JSON(http.StatusOK, resp)
 	}
 }

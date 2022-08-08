@@ -26,6 +26,30 @@ services:
       - rmq
     networks:
       - go-mono-repo
+  products:
+    image: semirm/go-mono-repo-products:1
+    build:
+      context: .
+      dockerfile: cmd/product/Dockerfile
+    container_name: go-mono-repo_products
+    command:
+      - -discounts_uri=go-mono-repo_discounts:8003
+    ports:
+      - "8002:8002"
+    depends_on:
+      - discounts
+    networks:
+      - go-mono-repo
+  discounts:
+    image: semirm/go-mono-repo-discounts:1
+    build:
+      context: .
+      dockerfile: cmd/discount/Dockerfile
+    container_name: go-mono-repo_discounts
+    ports:
+      - "8003:8003"
+    networks:
+      - go-mono-repo
   gateway:
     image: semirm/go-mono-repo-gateway:1
     build:
@@ -34,6 +58,7 @@ services:
     container_name: go-mono-repo_gateway
     command:
       - -account_uri=go-mono-repo_user:8001
+      - -products_uri=myt_products:8002
     ports:
       - "8000:8000"
     depends_on:

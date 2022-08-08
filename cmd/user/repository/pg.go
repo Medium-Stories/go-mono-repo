@@ -36,15 +36,3 @@ func NewPgDb(db *gorm.DB) *pgDb {
 func (repo *pgDb) AddAccount(ctx context.Context, account *user.Account) (*user.Account, error) {
 	return &user.Account{}, nil
 }
-
-func (repo *pgDb) DeleteAccount(ctx context.Context, id string) error {
-	return nil
-}
-
-func (repo *pgDb) GetById(ctx context.Context, id string) (*user.Account, error) {
-	return &user.Account{}, nil
-}
-
-func (repo *pgDb) GetByEmail(ctx context.Context, email string) (*user.Account, error) {
-	return &user.Account{}, nil
-}

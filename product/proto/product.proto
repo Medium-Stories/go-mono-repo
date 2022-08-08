@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package product;
+
+option go_package = "github.com/medium-stories/go-mono-repo/product/proto";
+
+service Product {
+  rpc GetProductsByFilter(GetProductsByFilterRequest) returns(ProductsResponse) {};
+}
+
+message GetProductsByFilterRequest {}
+
+message ProductsResponse {}
+
+message ProductMessage {}

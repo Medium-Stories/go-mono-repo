@@ -6,39 +6,12 @@ option go_package = "github.com/medium-stories/go-mono-repo/user/proto";
 
 service AccountManagement {
   rpc AddAccount(AccountRequest) returns(AccountMessage) {};
-  rpc DeleteAccount(DeleteAccountRequest) returns(DeleteAccountResponse) {};
 }
+
+message AccountRequest {}
 
 message AccountsResponse {
   repeated AccountMessage accounts = 1;
 }
 
-message AccountRequest {
-  string first_name = 1;
-  string last_name = 2;
-  string nickname = 3;
-  string password = 4;
-  string email = 5;
-  string country = 6;
-}
-
-message DeleteAccountRequest {
-  string id = 1;
-}
-
-message DeleteAccountResponse {
-  bool success = 1;
-}
-
-message AccountMessage {
-  string id = 1;
-  string first_name = 2;
-  string last_name = 3;
-  string nickname = 4;
-  string password = 5;
-  string email = 6;
-  string country = 7;
-  string created_at = 8;
-  string updated_at = 9;
-  string deleted_at = 10;
-}
+message AccountMessage {}

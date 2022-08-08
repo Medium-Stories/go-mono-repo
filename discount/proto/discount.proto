@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package discount;
+
+import "product/proto/product.proto";
+
+option go_package = "github.com/medium-stories/go-mono-repo/discount/proto";
+
+service DiscountProvider {
+  rpc ApplyDiscount(DiscountsRequest) returns(DiscountsResponse) {};
+}
+
+message DiscountsRequest {
+  repeated product.ProductMessage products = 1;
+}
+
+message DiscountsResponse {
+  repeated product.ProductMessage products = 1;
+}

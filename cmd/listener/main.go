@@ -30,9 +30,8 @@ func main() {
 
 	// create listeners for different account actions/events
 	accountCreated := events.NewAccountCreatedListener(hub)
-	accountDeleted := events.NewAccountDeletedListener(hub)
 
-	events.Listen(hubCtx, accountCreated, accountDeleted)
+	events.Listen(hubCtx, accountCreated)
 
 	logrus.Info("listening for messages...")
 

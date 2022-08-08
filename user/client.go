@@ -1,19 +1,19 @@
-package gateway
+package user
 
 import (
 	"github.com/medium-stories/go-mono-repo/internal/grpc"
 	pbUser "github.com/medium-stories/go-mono-repo/user/proto"
 )
 
-type api struct {
+type client struct {
 	rpcClient pbUser.AccountManagementClient
 }
 
-func NewApi(accAddr string) *api {
+func NewClient(accAddr string) *client {
 	conn := grpc.CreateClientConnection(accAddr)
-	client := pbUser.NewAccountManagementClient(conn)
+	rpcClient := pbUser.NewAccountManagementClient(conn)
 
-	return &api{
-		rpcClient: client,
+	return &client{
+		rpcClient: rpcClient,
 	}
 }
