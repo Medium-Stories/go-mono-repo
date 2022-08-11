@@ -3,9 +3,9 @@ package main
 import (
 	"context"
 	"flag"
-	"github.com/medium-stories/go-mono-repo/cmd/product/discount"
-	"github.com/medium-stories/go-mono-repo/cmd/product/repository"
 	"github.com/medium-stories/go-mono-repo/product"
+	"github.com/medium-stories/go-mono-repo/product/discount"
+	"github.com/medium-stories/go-mono-repo/product/repository"
 )
 
 var (
