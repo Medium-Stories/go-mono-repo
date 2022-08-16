@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func (client *client) GetProductsByFilterHandler() gin.HandlerFunc {
+func GetProductsByFilterHandler(client *client) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		products, err := client.rpcClient.GetProductsByFilter(c.Request.Context(), &pbProduct.GetProductsByFilterRequest{})
 		if err != nil {

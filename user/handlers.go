@@ -16,7 +16,7 @@ type CreateAccount struct {
 	Country   string `json:"country"`
 }
 
-func (client *client) CreateAccountHandler() gin.HandlerFunc {
+func CreateAccountHandler(client *client) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req *CreateAccount
 		if err := c.ShouldBindJSON(&req); err != nil {

@@ -21,8 +21,8 @@ func main() {
 	userClient := user.NewClient(*accountAddr)
 	productsClient := product.NewClient(*productsUri)
 
-	router.POST("users", userClient.CreateAccountHandler())
-	router.GET("products", productsClient.GetProductsByFilterHandler())
+	router.POST("users", user.CreateAccountHandler(userClient))
+	router.GET("products", product.GetProductsByFilterHandler(productsClient))
 
 	web.ServeHttp(*httpAddr, "gateway", router)
 }
