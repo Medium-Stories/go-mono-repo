@@ -7,9 +7,9 @@ import (
 	"net/http"
 )
 
-func GetProductsByFilterHandler(client *client) gin.HandlerFunc {
+func GetProductsByFilterHandler(client pbProduct.ProductClient) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		products, err := client.rpcClient.GetProductsByFilter(c.Request.Context(), &pbProduct.GetProductsByFilterRequest{})
+		products, err := client.GetProductsByFilter(c.Request.Context(), &pbProduct.GetProductsByFilterRequest{})
 		if err != nil {
 			logrus.Error(err)
 			c.AbortWithStatus(http.StatusBadRequest)

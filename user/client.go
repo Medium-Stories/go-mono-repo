@@ -5,15 +5,7 @@ import (
 	pbUser "github.com/medium-stories/go-mono-repo/user/proto"
 )
 
-type client struct {
-	rpcClient pbUser.AccountManagementClient
-}
-
-func NewClient(accAddr string) *client {
+func NewClient(accAddr string) pbUser.AccountManagementClient {
 	conn := grpc.CreateClientConnection(accAddr)
-	rpcClient := pbUser.NewAccountManagementClient(conn)
-
-	return &client{
-		rpcClient: rpcClient,
-	}
+	return pbUser.NewAccountManagementClient(conn)
 }

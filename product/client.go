@@ -5,15 +5,7 @@ import (
 	pbProduct "github.com/medium-stories/go-mono-repo/product/proto"
 )
 
-type client struct {
-	rpcClient pbProduct.ProductClient
-}
-
-func NewClient(accAddr string) *client {
+func NewClient(accAddr string) pbProduct.ProductClient {
 	conn := grpc.CreateClientConnection(accAddr)
-	rpcClient := pbProduct.NewProductClient(conn)
-
-	return &client{
-		rpcClient: rpcClient,
-	}
+	return pbProduct.NewProductClient(conn)
 }
